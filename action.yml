@@ -1,0 +1,27 @@
+name: 'RSS Monitor Action'
+description: 'A reusable GitHub Action to monitor RSS feeds'
+branding:
+  icon: 'rss'
+  color: 'orange'
+
+inputs:
+  rss-feeds:
+    description: 'Comma-separated list of RSS feed URLs to monitor'
+    required: true
+    default: ''
+  debug:
+    description: 'Enable debug mode'
+    required: false
+    default: false
+  commit-directory:
+    description: 'Directory to save the lastPublished.json file'
+    required: false
+    default: '.'
+  commit-message:
+    description: 'Commit message for changes to lastPublished.json'
+    required: false
+    default: '🤖 Update lastPublished.json'
+
+runs:
+  using: 'node20'
+  main: './dist/index.js'
