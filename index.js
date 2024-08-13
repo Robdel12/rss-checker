@@ -57,17 +57,21 @@ export const fetchFeed = async (url, lastPublishedDates) => {
 
     if (isDebug) core.debug(`Parsed items for ${url}: ${JSON.stringify(items)}`);
 
-    return items.map(item => ({
-      title: item.title,
-      link: item.link,
-      publishedDate: new Date(item.pubDate).toISOString(),
-    })).filter(article => {
-      let lastPublished = lastPublishedDates[url];
-      let isNew = !lastPublished || new Date(article.publishedDate) > new Date(lastPublished);
+    return items
+      .filter(item => item.pubDate)
+      .map(item => ({
+        title: item.title,
+        link: item.link,
+        publishedDate: new Date(item.pubDate).toISOString(),
+      }))
+      .filter(article => {
+        let lastPublished = lastPublishedDates[url];
+        let publishedDate = new Date(article.publishedDate);
+        let isNew = !lastPublished || (publishedDate > new Date(lastPublished) && publishedDate <= new Date());
 
-      if (isDebug) core.debug(`Article "${article.title}" is new: ${isNew}`);
-      return isNew;
-    });
+        if (isDebug) core.debug(`Article "${article.title}" is new: ${isNew}`);
+        return isNew;
+      });
   } catch (error) {
     core.error(`Error fetching feed: ${error.message}`);
     return [];
